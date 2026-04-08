@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Timers Lab</title>
+    <style>
+        #clock { font-size: 24px; font-weight: bold; color: blue; }
+        .alarm-active { background-color: red !important; }
+    </style>
+</head>
+<body>
+    <h1>Таймери та Час</h1>
+
+    <div id="clock">00:00:00</div>
+
+    <hr>
+
+    <h3>Зворотний відлік (хв)</h3>
+    <input type="number" id="minutesInput" value="1">
+    <button onclick="startTimer()">Старт</button>
+    <div id="countdownDisplay">--:--</div>
+
+    <hr>
+
+    <h3>Будильник</h3>
+    <input type="time" id="alarmTime">
+    <button onclick="setAlarm()">Встановити будильник</button>
+
+    <script>
+        // 1. Поточний час
+        setInterval(() => {
+            const now = new Date();
+            document.getElementById('clock').innerText = now.toLocaleTimeString();
+        }, 1000);
+
+        // 2. Таймер зворотного відліку
+        function startTimer() {
+            let time = document.getElementById('minutesInput').value * 60;
+            const display = document.getElementById('countdownDisplay');
+            
+            const timer = setInterval(() => {
+                const mins = Math.floor(time / 60);
+                const secs = time % 60;
+                display.innerText = `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+                
+                if (time-- <= 0) {
+                    clearInterval(timer);
+                    alert("Час вийшов!");
+                }
+            }, 1000);
+        }
+
+        // 3. Будильник зі зміною фону
+        function setAlarm() {
+            const target = document.getElementById('alarmTime').value;
+            if (!target) return;
+
+            const checker = setInterval(() => {
+                const now = new Date();
+                const current = now.getHours() + ":" + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+                
+                if (current === target) {
+                    document.body.classList.add('alarm-active');
+                    alert("БУДИЛЬНИК!");
+                    clearInterval(checker);
+                }
+            }, 1000);
+        }
+    </script>
+</body>
+</html>
